@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Yasmine &amp; Adam | دعوة زفاف على شاطئ البحر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cairo:wght@300;400;500;600;700&family=Amiri:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sable: #F6EFDE;
+    --sable-2: #EFE3C6;
+    --papier: #FFFBF2;
+    --encre: #234A4B;
+    --encre-doux: #4C6E6C;
+    --turquoise: #1EA6A0;
+    --turquoise-deep: #106B68;
+    --turquoise-light: #8FDAD1;
+    --or: #C79A3C;
+    --or-deep: #9C7A29;
+    --corail: #C9694F;
+    --ligne: rgba(30,166,160,0.28);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Cormorant Garamond', serif;
+    background:var(--sable);
+    color:var(--encre);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .ar{ font-family:'Amiri', serif; direction:rtl; unicode-bidi:isolate; }
+  .ar-title{ font-family:'Aref Ruqaa', serif; direction:rtl; unicode-bidi:isolate; }
+
+  .bg-texture{
+    position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(30,166,160,0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 10% 100%, rgba(199,154,60,0.10), transparent 60%),
+      var(--sable);
+  }
+
+  /* ---------- ENVELOPE INTRO ---------- */
+  #envelope-screen{
+    position:fixed; inset:0; z-index:999;
+    background:linear-gradient(155deg, #0E3E3F, #106B68);
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    transition:opacity 0.9s ease, visibility 0.9s ease;
+  }
+  #envelope-screen.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+
+  .envelope-video-wrap{ position:absolute; inset:0; width:100%; height:100%; cursor:pointer; }
+  .envelope-video{ width:100%; height:100%; object-fit:cover; display:block; background:#0E3E3F; }
+  .tap-overlay{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(8,30,30,0.30); transition:opacity .5s ease;
+  }
+  .envelope-video-wrap.playing .tap-overlay{ opacity:0; pointer-events:none; }
+  .tap-icon{
+    width:64px; height:64px; border-radius:50%;
+    background:rgba(255,251,242,0.92);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.35);
+    animation:pulse 2.2s ease-in-out infinite;
+  }
+  .tap-icon svg{ width:26px; height:26px; color:var(--turquoise-deep); margin-left:-3px; }
+
+  .petals-container{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:5; }
+  .petal{
+    position:absolute; top:-8%; border-radius:50% 10% 50% 10%;
+    opacity:0; animation-name:petalFall, petalFade;
+    animation-timing-function:linear, ease-in-out;
+    animation-iteration-count:infinite, infinite;
+  }
+  @keyframes petalFall{
+    from{ transform:translateY(0) translateX(0) rotate(0deg); }
+    to{ transform:translateY(115vh) translateX(var(--drift, 40px)) rotate(360deg); }
+  }
+  @keyframes petalFade{ 0%{opacity:0;} 10%{opacity:.9;} 85%{opacity:.9;} 100%{opacity:0;} }
+
+  .intro-hint{
+    position:absolute; bottom:8%; left:0; right:0; text-align:center;
+    font-family:'Cairo', sans-serif; letter-spacing:.08em; text-transform:uppercase;
+    color:#FBF6E9; text-shadow:0 2px 8px rgba(0,0,0,0.35); font-size:.85rem;
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  .envelope-video-wrap.playing ~ .intro-hint{ opacity:0; transition:opacity .4s ease; }
+  @keyframes pulse{ 0%,100%{opacity:.55;} 50%{opacity:1;} }
+
+  .intro-names{
+    position:absolute; top:10%; left:0; right:0; z-index:3;
+    font-family:'Aref Ruqaa', serif; font-size:clamp(1.6rem, 6vw, 2.3rem);
+    color:#FBF6E9; text-shadow:0 3px 12px rgba(0,0,0,0.4);
+    text-align:center; transition:opacity .4s ease;
+  }
+  .envelope-video-wrap.playing ~ .intro-names{ opacity:0; }
+
+  /* ---------- SECTIONS ---------- */
+  section{ position:relative; padding:5rem 1.5rem; max-width:640px; margin:0 auto; text-align:center; }
+
+  .ornament-line{ display:flex; align-items:center; justify-content:center; gap:.8rem; margin:1.5rem auto; color:var(--or); }
+  .ornament-line::before, .ornament-line::after{
+    content:''; height:1px; width:44px;
+    background:linear-gradient(90deg, transparent, var(--or), transparent);
+  }
+  .ornament-line svg{ width:20px; height:20px; opacity:.9; color:var(--turquoise-deep); }
+
+  .reveal{ opacity:0; transform:translateY(26px); transition:opacity .85s cubic-bezier(.2,.7,.2,1), transform .85s cubic-bezier(.2,.7,.2,1); }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+  .reveal-d1{ transition-delay:.08s; } .reveal-d2{ transition-delay:.16s; } .reveal-d3{ transition-delay:.24s; }
+  .reveal-d4{ transition-delay:.32s; } .reveal-zoom{ transform:scale(0.92); } .reveal-zoom.visible{ transform:scale(1); }
+
+  /* ---------- HERO ---------- */
+  #hero{ max-width:100%; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    padding:0 1.5rem 4.5rem; position:relative; overflow:hidden; color:#FBF6E9; }
+  #hero .hero-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+  #hero::after{
+    content:''; position:absolute; inset:0;
+    background-image:linear-gradient(180deg, rgba(10,40,40,0.05) 0%, rgba(8,32,32,0.55) 78%, rgba(6,24,24,0.78) 100%);
+    z-index:1;
+  }
+  #hero > *{ position:relative; z-index:2; }
+  @keyframes heroFadeUp{ from{ opacity:0; transform:translateY(22px); } to{ opacity:1; transform:translateY(0); } }
+  .hero-anim{ opacity:0; animation:heroFadeUp 1s cubic-bezier(.2,.7,.2,1) forwards; }
+  .eyebrow{ font-family:'Cairo', sans-serif; font-size:.8rem; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--turquoise-light); margin-bottom:1rem; opacity:.95; animation-delay:.15s; }
+  .hero-names{
+    font-family:'Aref Ruqaa', serif; font-weight:700; font-size:clamp(2.6rem, 11vw, 4.2rem); line-height:1.25;
+    background:linear-gradient(90deg, #FBF6E9 0%, #F3E9C6 20%, #FFFDF4 40%, #E3C878 55%, #FBF6E9 75%, #F3E9C6 100%);
+    background-size:250% 100%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:#FBF6E9;
+    filter:drop-shadow(0 4px 14px rgba(0,0,0,0.4));
+    animation-name:heroFadeUp, heroShimmer; animation-duration:1s, 4.5s;
+    animation-timing-function:cubic-bezier(.2,.7,.2,1), linear; animation-fill-mode:forwards, none;
+    animation-iteration-count:1, infinite; animation-delay:.3s, 1.3s;
+  }
+  @keyframes heroShimmer{ 0%{ background-position:200% 0; } 100%{ background-position:-50% 0; } }
+  .hero-and{ font-family:'Amiri', serif; font-style:italic; font-size:1.5rem; color:var(--turquoise-light); margin:.3rem 0; animation-delay:.45s; }
+  .hero-date{ margin-top:1.3rem; font-size:1.1rem; letter-spacing:.05em; color:#F3E9C6; animation-delay:.75s; }
+  .hero-place{ margin-top:.3rem; font-family:'Cairo',sans-serif; font-size:.85rem; letter-spacing:.1em; color:var(--turquoise-light); animation-delay:.85s; }
+  .scroll-cue{ margin-top:2.2rem; width:26px; height:42px; border:1.5px solid rgba(251,246,233,0.7); border-radius:20px; position:relative; }
+  .scroll-cue::before{ content:''; position:absolute; top:7px; left:50%; transform:translateX(-50%); width:4px; height:8px;
+    background:#FBF6E9; border-radius:3px; animation:scrollDown 1.8s ease-in-out infinite; }
+  @keyframes scrollDown{ 0%{opacity:1; top:7px;} 70%{opacity:0; top:20px;} 100%{opacity:0; top:7px;} }
+
+  /* ---------- VERSE ---------- */
+  #verse{ padding-top:4.5rem; padding-bottom:4rem; }
+  .bismillah{ font-family:'Amiri', serif; font-size:1.35rem; color:var(--or-deep); margin-bottom:1.3rem; }
+  .verse-text{ font-family:'Amiri', serif; font-style:italic; font-size:clamp(1.05rem, 3.4vw, 1.25rem); line-height:2.05; color:var(--encre); }
+  .verse-fr{ margin-top:1.1rem; font-size:.95rem; color:var(--encre-doux); line-height:1.8; }
+  .verse-ref{ margin-top:.9rem; font-size:.8rem; color:var(--encre-doux); letter-spacing:.05em; }
+
+  /* ---------- INVITATION ---------- */
+  .invite-kicker{ font-family:'Aref Ruqaa', serif; font-size:1.4rem; color:var(--turquoise-deep); margin-bottom:1.1rem; }
+  .invite-body{ font-size:1.08rem; line-height:1.95; color:var(--encre-doux); max-width:480px; margin:0 auto; }
+  .invite-body-ar{ font-size:1.1rem; line-height:2.1; color:var(--encre-doux); max-width:480px; margin:1rem auto 0; }
+  .invite-names-big{ font-family:'Aref Ruqaa', serif; font-size:clamp(1.8rem, 6vw, 2.3rem); color:var(--encre); margin:1.5rem 0 .4rem; }
+  .invite-parents{ font-size:.9rem; color:var(--encre-doux); line-height:1.85; margin-top:1.5rem; }
+
+  /* ---------- COUNTDOWN ---------- */
+  #countdown{ background:var(--sable-2); border-top:1px solid var(--ligne); border-bottom:1px solid var(--ligne); }
+  .count-title{ font-family:'Aref Ruqaa', serif; font-size:1.55rem; color:var(--encre); margin-bottom:.35rem;}
+  .count-sub{ color:var(--encre-doux); font-size:.9rem; margin-bottom:1.9rem;}
+  .count-grid{ display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
+  .count-cell{ background:var(--papier); border:1px solid var(--ligne); border-radius:14px; padding:1.05rem 1rem; min-width:76px; }
+  .count-num{ font-size:1.85rem; font-weight:700; color:var(--turquoise-deep); font-variant-numeric:tabular-nums; }
+  .count-num.tick{ animation:tickPulse .5s ease; }
+  @keyframes tickPulse{ 0%{ transform:scale(1); } 30%{ transform:scale(1.18); color:var(--corail); } 100%{ transform:scale(1); } }
+  .count-label{ font-size:.75rem; color:var(--encre-doux); margin-top:.3rem; }
+  .add-cal{ display:inline-block; margin-top:2.1rem; padding:.85rem 2.2rem; background:var(--turquoise-deep); color:#FBF6E9;
+    border-radius:30px; text-decoration:none; font-family:'Cairo', sans-serif; font-size:.9rem; letter-spacing:.03em;
+    transition:background .25s ease, transform .25s ease; border:none; cursor:pointer; }
+  .add-cal:hover{ background:var(--corail); transform:translateY(-2px); }
+
+  /* ---------- PROGRAM ---------- */
+  .timeline{ margin-top:2.3rem; text-align:right; display:flex; flex-direction:column; gap:0; }
+  .timeline-item{ position:relative; padding-right:2.2rem; padding-bottom:2rem; border-right:1.5px solid var(--ligne); }
+  .timeline-item.last{ border-right:1.5px solid transparent; padding-bottom:0; }
+  .timeline-dot{ position:absolute; right:-6px; top:2px; width:11px; height:11px; border-radius:50%;
+    background:var(--turquoise-deep); border:2px solid var(--papier); box-shadow:0 0 0 2px var(--turquoise-deep); }
+  .timeline-time{ font-family:'Cairo',sans-serif; font-size:.78rem; color:var(--turquoise-deep); letter-spacing:.03em; margin-bottom:.3rem; font-weight:600; }
+  .timeline-content h3{ font-family:'Aref Ruqaa', serif; font-size:1.1rem; color:var(--encre); margin-bottom:.2rem;}
+  .timeline-content p{ font-size:.86rem; color:var(--encre-doux); line-height:1.6; }
+
+  /* ---------- MOMENTS / PLACEHOLDER PHOTOS ---------- */
+  #moments{ background:var(--sable-2); border-top:1px solid var(--ligne); border-bottom:1px solid var(--ligne); }
+  .moments-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin-top:2rem; }
+  .photo-slot{
+    position:relative; border-radius:14px; overflow:hidden; aspect-ratio:3/4;
+    background:linear-gradient(160deg, var(--turquoise-light), var(--turquoise));
+    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(16,107,104,0.18);
+  }
+  .photo-slot.tall{ grid-row:span 2; aspect-ratio:3/5; }
+  .photo-slot span{ font-family:'Cairo', sans-serif; font-size:.75rem; color:rgba(255,251,242,0.85); letter-spacing:.05em; text-align:center; padding:0 .6rem; }
+  .photo-slot img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease; }
+  .photo-slot:hover img{ transform:scale(1.06); }
+  .moments-quote{ margin-top:2rem; font-family:'Amiri', serif; font-style:italic; color:var(--encre-doux); font-size:1.02rem; }
+
+  /* ---------- LOCATION ---------- */
+  .location-card{ background:var(--papier); border:1px solid var(--ligne); border-radius:18px; padding:2rem 1.6rem; margin-top:1.8rem; }
+  .location-card h3{ font-family:'Aref Ruqaa', serif; font-size:1.25rem; margin-bottom:.5rem; color:var(--encre);}
+  .location-card p{ color:var(--encre-doux); font-size:.95rem; line-height:1.8; margin-bottom:1.3rem;}
+  .map-btn{ display:inline-flex; align-items:center; gap:.5rem; padding:.8rem 1.8rem; border:1.5px solid var(--turquoise-deep); border-radius:30px;
+    color:var(--turquoise-deep); text-decoration:none; font-family:'Cairo',sans-serif; font-size:.9rem; transition:all .25s ease; }
+  .map-btn:hover{ background:var(--turquoise-deep); color:#FBF6E9; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ text-align:center; padding:3.5rem 1.5rem 3rem; }
+  footer .foot-names{ font-family:'Aref Ruqaa', serif; font-size:1.45rem; color:var(--encre); margin-bottom:.3rem;}
+  footer .foot-date{ font-size:.85rem; color:var(--encre-doux); margin-bottom:1.5rem;}
+  footer .foot-credit{ font-size:.7rem; color:var(--encre-doux); opacity:.7; letter-spacing:.05em;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .intro-hint, .scroll-cue::before{ animation:none; }
+    .corner-deco, .hero-anim, .count-num.tick{ animation:none !important; }
+    .hero-anim{ opacity:1 !important; transform:none !important; }
+    .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+    .tap-icon{ animation:none !important; }
+    #hero .hero-video{ display:none !important; }
+    .petal{ display:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-texture"></div>
+
+<!-- ENVELOPE INTRO -->
+<div id="envelope-screen">
+  <div class="petals-container" id="petalsContainer"></div>
+  <div class="intro-names">Yasmine <span class="ar">&amp;</span> Adam</div>
+  <div class="envelope-video-wrap" id="envelopeTrigger">
+    <video id="envelopeVideo" class="envelope-video" muted playsinline preload="auto">
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3GT4FX7jnepetZ9kRSxZnEj3GE4/hf_20260806_152942_1dbf6dd5-b01c-4560-ab1f-c2cce2e07b43.mp4" type="video/mp4">
+    </video>
+    <div class="tap-overlay">
+      <div class="tap-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="intro-hint">Touchez pour ouvrir &nbsp;•&nbsp; <span class="ar">المسوا لفتح الدعوة</span></div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto">
+    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3GT4FX7jnepetZ9kRSxZnEj3GE4/hf_20260806_152948_849087f6-5878-46fa-a8df-7ea805e83584.mp4" type="video/mp4">
+  </video>
+  <div class="eyebrow hero-anim">Notre mariage au bord de la mer</div>
+  <div class="hero-names hero-anim">Yasmine</div>
+  <div class="hero-and hero-anim">و <span style="font-family:'Cormorant Garamond',serif; font-style:italic;">&amp;</span></div>
+  <div class="hero-names hero-anim">Adam</div>
+  <div class="hero-date hero-anim">12 Septembre 2026 &nbsp;•&nbsp; <span class="ar">12 سبتمبر 2026</span></div>
+  <div class="hero-place hero-anim">ESSAOUIRA · MAROC</div>
+  <div class="scroll-cue"></div>
+</section>
+
+<!-- VERSE -->
+<section id="verse">
+  <div class="bismillah ar">بسم الله الرحمن الرحيم</div>
+  <p class="verse-text ar">
+    وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا
+    وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً
+  </p>
+  <p class="verse-fr">« Et parmi Ses signes, Il a créé pour vous, de vous-mêmes, des épouses afin que vous viviez en tranquillité avec elles, et Il a mis entre vous de l'affection et de la bonté. »</p>
+  <div class="verse-ref">سورة الروم — 21 &nbsp;|&nbsp; Sourate Ar-Rûm, 21</div>
+</section>
+
+<!-- INVITATION -->
+<section id="invitation">
+  <div class="ornament-line">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 16c4-6 8-6 10 0 2-6 6-6 10 0"/></svg>
+  </div>
+  <div class="invite-kicker ar-title">بحضوركم تكتمل فرحتنا</div>
+  <p class="invite-body">
+    Le sable, le vent et l'océan seront nos témoins. Nous serions infiniment
+    heureux de vous compter parmi nous pour célébrer le début de notre
+    nouvelle vie, face à la mer.
+  </p>
+  <p class="invite-body-ar ar">
+    نتشرف بدعوتكم لمشاركتنا أجمل لحظات حياتنا، في حفل زفافنا على شاطئ البحر،
+    حيث الرمل الذهبي والأمواج الفيروزية شاهدين على بداية قصتنا.
+  </p>
+  <div class="invite-names-big ar-title">يـاسـمـيـن &amp; آدم</div>
+  <p class="invite-parents">
+    Famille Bennani &amp; Famille El Amrani<br>
+    <span class="ar">عائلة بناني &amp; عائلة العمراني</span>
+  </p>
+</section>
+
+<!-- COUNTDOWN -->
+<section id="countdown">
+  <div class="count-title ar-title">العد التنازلي</div>
+  <div class="count-sub">Le compte à rebours a commencé</div>
+  <div class="count-grid">
+    <div class="count-cell reveal reveal-zoom"><div class="count-num" id="cd-days">00</div><div class="count-label">Jours</div></div>
+    <div class="count-cell reveal reveal-zoom reveal-d1"><div class="count-num" id="cd-hours">00</div><div class="count-label">Heures</div></div>
+    <div class="count-cell reveal reveal-zoom reveal-d2"><div class="count-num" id="cd-min">00</div><div class="count-label">Minutes</div></div>
+    <div class="count-cell reveal reveal-zoom reveal-d3"><div class="count-num" id="cd-sec">00</div><div class="count-label">Secondes</div></div>
+  </div>
+  <button class="add-cal reveal reveal-d4" id="addCalBtn">Ajouter à mon agenda</button>
+</section>
+
+<!-- PROGRAM -->
+<section id="program">
+  <div class="count-title ar-title">برنامج اليوم</div>
+  <div class="count-sub">Déroulé de la journée</div>
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">17:30 &nbsp;•&nbsp; <span class="ar">5:30 م</span></div>
+        <h3>Cérémonie sur la plage</h3>
+        <p>Échange des vœux face au coucher de soleil, pieds dans le sable.</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal reveal-d1">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">18:30 &nbsp;•&nbsp; <span class="ar">6:30 م</span></div>
+        <h3>Cocktail &amp; photos</h3>
+        <p>Un moment convivial autour de rafraîchissements, entre amis et famille.</p>
+      </div>
+    </div>
+    <div class="timeline-item reveal reveal-d2">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">20:00 &nbsp;•&nbsp; <span class="ar">8:00 م</span></div>
+        <h3>Dîner sous les étoiles</h3>
+        <p>Table dressée face à l'océan, à la lueur des bougies et des lanternes.</p>
+      </div>
+    </div>
+    <div class="timeline-item last reveal reveal-d3">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-time">22:00 &nbsp;•&nbsp; <span class="ar">10:00 م</span></div>
+        <h3>Fête &amp; musique</h3>
+        <p>Danse pieds nus sur le sable jusqu'au bout de la nuit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOMENTS (placeholders à remplacer par vos photos) -->
+<section id="moments">
+  <div class="count-title ar-title">لحظاتنا</div>
+  <div class="count-sub">Quelques instants à nous</div>
+  <div class="moments-grid">
+    <div class="photo-slot tall reveal reveal-zoom"><img src="images/moment-plage.jpeg" alt="Le couple main dans la main sur la plage"></div>
+    <div class="photo-slot reveal reveal-zoom reveal-d1"><img src="images/moment-mains.jpeg" alt="Mains entrelacées avec les alliances, pieds dans le sable"></div>
+    <div class="photo-slot reveal reveal-zoom reveal-d2"><img src="images/moment-arche.jpeg" alt="Le couple riant sous l'arche fleurie face à l'océan"></div>
+  </div>
+  <p class="moments-quote">« Deux âmes, un seul horizon. »</p>
+</section>
+
+
+<!-- LOCATION -->
+<section id="location">
+  <div class="count-title ar-title">الموقع</div>
+  <div class="count-sub">Où nous retrouver</div>
+  <div class="location-card reveal">
+    <h3>Plage Le Mirage</h3>
+    <p>Route côtière, Essaouira, Maroc<br><span class="ar">طريق الساحل، الصويرة، المغرب</span></p>
+    <a class="map-btn" href="https://maps.google.com/?q=Essaouira+Morocco" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+      Voir sur la carte
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-names ar-title">يـاسـمـيـن &amp; آدم</div>
+  <div class="foot-date">12 Septembre 2026 · Essaouira, Maroc</div>
+  <div class="foot-credit">FAIT AVEC AMOUR &nbsp;•&nbsp; <span class="ar">صنع بحب</span></div>
+</footer>
+
+<script>
+  // Petals (frangipani) falling animation
+  const petalsContainer = document.getElementById('petalsContainer');
+  const petalColors = ['#FBF6E9', '#E3C878', '#FFFDF4'];
+  for(let i=0;i<22;i++){
+    const p = document.createElement('div');
+    p.className='petal';
+    const size = 6 + Math.random()*8;
+    p.style.width = size+'px';
+    p.style.height = (size*0.7)+'px';
+    p.style.left = (Math.random()*100)+'%';
+    p.style.background = petalColors[Math.floor(Math.random()*petalColors.length)];
+    p.style.setProperty('--drift', (Math.random()*80-40)+'px');
+    const dur = 6+Math.random()*6;
+    p.style.animationDuration = dur+'s, '+dur+'s';
+    p.style.animationDelay = (-Math.random()*dur)+'s, '+(-Math.random()*dur)+'s';
+    petalsContainer.appendChild(p);
+  }
+
+  // Envelope video trigger
+  const envelopeScreen = document.getElementById('envelope-screen');
+  const envelopeTrigger = document.getElementById('envelopeTrigger');
+  const envelopeVideo = document.getElementById('envelopeVideo');
+  envelopeTrigger.addEventListener('click', () => {
+    envelopeTrigger.classList.add('playing');
+    envelopeVideo.muted = false;
+    envelopeVideo.play().catch(()=>{});
+    setTimeout(() => { envelopeScreen.classList.add('hidden'); }, 1400);
+  });
+  envelopeVideo.addEventListener('ended', () => { envelopeScreen.classList.add('hidden'); });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold:0.15 });
+  revealEls.forEach(el=>io.observe(el));
+
+  // Countdown
+  const weddingDate = new Date('2026-09-12T17:30:00');
+  function updateCountdown(){
+    const diff = weddingDate - new Date();
+    if(diff<=0){
+      ['cd-days','cd-hours','cd-min','cd-sec'].forEach(id=>document.getElementById(id).textContent='00');
+      return;
+    }
+    const d = Math.floor(diff/(1000*60*60*24));
+    const h = Math.floor((diff/(1000*60*60))%24);
+    const m = Math.floor((diff/(1000*60))%60);
+    const s = Math.floor((diff/1000)%60);
+    document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-min').textContent = String(m).padStart(2,'0');
+    const secEl = document.getElementById('cd-sec');
+    secEl.textContent = String(s).padStart(2,'0');
+    secEl.classList.remove('tick'); void secEl.offsetWidth; secEl.classList.add('tick');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Add to calendar
+  document.getElementById('addCalBtn').addEventListener('click', () => {
+    const ics = [
+      'BEGIN:VCALENDAR','VERSION:2.0','BEGIN:VEVENT',
+      'SUMMARY:Mariage de Yasmine & Adam',
+      'DTSTART:20260912T163000Z',
+      'DTEND:20260912T223000Z',
+      'LOCATION:Plage Le Mirage, Essaouira, Maroc',
+      'DESCRIPTION:Nous serions heureux de vous compter parmi nous.',
+      'END:VEVENT','END:VCALENDAR'
+    ].join('\r\n');
+    const blob = new Blob([ics], {type:'text/calendar'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'mariage-yasmine-adam.ics';
+    link.click();
+  });
+</script>
+</body>
+</html>
